@@ -71,3 +71,23 @@ CREATE TABLE notifications (
 
 -- Index for frequent query
 CREATE INDEX idx_notifications_student_isread ON notifications(student_id, is_read DESC, timestamp DESC);
+
+
+# Stage 3
+
+## Optimized Query
+
+```sql
+SELECT id, type, message, timestamp
+FROM notifications
+WHERE student_id = '1042' AND is_read = false
+ORDER BY timestamp DESC
+LIMIT 50;
+```
+
+Create index:
+
+```sql
+CREATE INDEX idx_unread_recent
+ON notifications(student_id, is_read, timestamp DESC);
+```
