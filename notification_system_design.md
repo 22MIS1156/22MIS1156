@@ -91,3 +91,13 @@ Create index:
 CREATE INDEX idx_unread_recent
 ON notifications(student_id, is_read, timestamp DESC);
 ```
+
+
+# Stage 4
+
+## Performance Improvements
+
+- Pagination (10 per request)
+- Redis cache for unread count
+- Client caching (5 mins TTL)
+- WebSockets for real-time updates
