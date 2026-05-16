@@ -1,0 +1,11 @@
+node_modules/
+.env
+*.log
+npm-debug.log*
+dist/
+build/
+out/
+coverage/
+.DS_Store
+.vercel
+tmp/
