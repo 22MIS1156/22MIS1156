@@ -38,3 +38,36 @@ Fetch paginated list of notifications.
     "next": "/api/notifications?page=2&limit=10"
   }
 }
+
+
+# Stage 2
+
+## Suggested DB: PostgreSQL
+
+### Why?
+- ACID compliance
+- Strong support for JSONB, indexing, full-text search
+- Handles complex queries well
+- Mature ecosystem
+- Supports partial indexes, materialized views
+
+## Schema
+
+```sql
+CREATE TABLE students (
+  id VARCHAR(50) PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE
+);
+
+CREATE TABLE notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id VARCHAR(50) REFERENCES students(id),
+  type VARCHAR(20) CHECK (type IN ('Event', 'Result', 'Placement')),
+  message TEXT NOT NULL,
+  timestamp TIMESTAMPTZ DEFAULT NOW(),
+  is_read BOOLEAN DEFAULT FALSE
+);
+
+-- Index for frequent query
+CREATE INDEX idx_notifications_student_isread ON notifications(student_id, is_read DESC, timestamp DESC);
