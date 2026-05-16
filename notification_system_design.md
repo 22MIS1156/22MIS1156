@@ -101,3 +101,33 @@ ON notifications(student_id, is_read, timestamp DESC);
 - Redis cache for unread count
 - Client caching (5 mins TTL)
 - WebSockets for real-time updates
+
+
+# Stage 5
+
+## Bulk Notify Reliability
+
+### Problems in naive approach
+
+Sequential sending is very slow and unreliable. If email fails midway, system state becomes inconsistent.
+
+### Better Approach: Queue + Worker
+
+- Create a job log
+- Enqueue each notification task
+- Worker processes with retry
+- DB write and email sending are decoupled
+
+### Revised Pseudocode
+
+```python
+def notify_all(student_ids, msg):
+  job_id = create_job_log(msg)
+  for sid in student_ids:
+    enqueue({
+      'student_id': sid,
+      'message': msg,
+      'job_id': job_id,
+      'retries': 0
+    })
+```
